@@ -1,0 +1,59 @@
+/* Mobile: 320–767 */
+@media (max-width: 767px) {
+  .primary-nav {
+    position: fixed; left: 0; right: 0; top: var(--header-h);
+    background: rgba(13,13,13,.98); border-bottom: 1px solid var(--line);
+    padding: 1.5rem var(--gutter) 2rem;
+    display: none;
+  }
+  .primary-nav.is-open { display: block; }
+  @media (prefers-reduced-motion: no-preference) {
+    .primary-nav.is-open { animation: dropin .35s var(--ease); }
+  }
+  .primary-nav ul { display: flex; flex-direction: column; margin-bottom: 1.5rem; }
+  .primary-nav li a { display: block; padding: 1rem 0; border-bottom: 1px solid var(--line); font-family: var(--font-display); text-transform: none; letter-spacing: 0; font-size: 1.5rem; }
+  .primary-nav li a::after { display: none; }
+  .primary-nav .btn { width: 100%; min-height: 52px; }
+  .hero-ctas { width: 100%; flex-direction: column; }
+  .hero-ctas .btn, .closing .btn { width: 100%; }
+  .logo-year { display: none; }
+}
+@keyframes dropin { from { opacity: 0; transform: translateY(-8px); } }
+
+@media (max-width: 359px) {
+  .cd-name { font-size: .55rem; letter-spacing: .1em; }
+  .cd-num { font-size: 1.5rem; }
+}
+
+/* Tablet: 768–1023 */
+@media (min-width: 768px) {
+  .nav-toggle { display: none; }
+  .primary-nav { display: flex; align-items: center; gap: 2rem; }
+  .primary-nav ul { display: flex; gap: 1.75rem; }
+  .speaker-grid { grid-template-columns: repeat(2, 1fr); }
+  .quad { grid-template-columns: repeat(2, 1fr); column-gap: 2rem; }
+  .footer-grid { grid-template-columns: repeat(2, 1fr); }
+  .section-head { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+  .agenda-item { grid-template-columns: 4rem 9rem 1fr auto; align-items: center; }
+  .agenda-num { grid-row: auto; }
+  .agenda-speaker { justify-self: end; }
+}
+
+/* Desktop: 1024+ */
+@media (min-width: 1024px) {
+  .speaker-grid { grid-template-columns: repeat(4, 1fr); }
+  .speaker-card:nth-child(even) { transform: translateY(2.5rem); }
+  .js-motion .speaker-card:nth-child(even):not(.is-visible) { transform: translateY(calc(2.5rem + 18px)); }
+  .speakers .note { margin-top: 4.5rem; }
+  .about-grid { grid-template-columns: 5fr 6fr; gap: 5rem; align-items: start; }
+  .quad { grid-template-columns: repeat(4, 1fr); }
+  .quad-item { flex-direction: column; gap: .5rem; padding: 1.75rem 1.5rem 1.75rem 0; }
+  .footer-grid { grid-template-columns: 1.2fr 1fr 1.4fr; }
+  .section-head { flex-wrap: nowrap; }
+}
+
+/* Wide: 1440+ — container already capped at 1200 and centered */
+@media (min-width: 1440px) {
+  :root { --gutter: 0px; }
+  .container { max-width: 1200px; }
+}
