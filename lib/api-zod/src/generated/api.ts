@@ -9,7 +9,7 @@ import * as zod from 'zod';
 
 
 /**
- * @summary Check verified session access to the summit
+ * @summary Check verified session access to the account portal
  */
 export const GetSummitAccessResponse = zod.object({
   "authenticated": zod.boolean()
@@ -17,7 +17,7 @@ export const GetSummitAccessResponse = zod.object({
 
 
 /**
- * @summary Receive the event document only after authentication
+ * @summary Receive the public summit event document
  */
 export const GetSummitDocumentResponse = zod.unknown()
 

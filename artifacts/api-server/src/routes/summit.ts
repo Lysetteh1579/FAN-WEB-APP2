@@ -4,9 +4,9 @@ import { getAuth } from "@clerk/express";
 import { GetSummitAccessResponse } from "@workspace/api-zod";
 
 const router: IRouter = Router();
-// build.mjs copies these private files alongside the server bundle. They must
-// never be placed in the web artifact's public directory or client bundles.
-const privateRoot = fileURLToPath(new URL("./private/summit/", import.meta.url));
+// build.mjs copies the original event files alongside the server bundle.
+// This explicit static route serves only event assets, not account information.
+const summitRoot = fileURLToPath(new URL("./private/summit/", import.meta.url));
 
 const requireSummitSession: RequestHandler = (req, res, next) => {
   res.setHeader("Cache-Control", "private, no-store, max-age=0");
@@ -20,20 +20,20 @@ const requireSummitSession: RequestHandler = (req, res, next) => {
   next();
 };
 
-router.use("/summit", requireSummitSession);
-
-router.get("/summit/access", (_req, res) => {
+router.get("/summit/access", requireSummitSession, (_req, res) => {
   res.json(GetSummitAccessResponse.parse({ authenticated: true }));
 });
 
 router.use(
   "/summit/content",
   (_req, res, next) => {
+    res.setHeader("Cache-Control", "no-store, max-age=0");
+    res.setHeader("X-Content-Type-Options", "nosniff");
     res.setHeader("X-Frame-Options", "SAMEORIGIN");
     res.setHeader("Content-Security-Policy", "frame-ancestors 'self'");
     next();
   },
-  express.static(privateRoot, {
+  express.static(summitRoot, {
     index: "index.html",
     dotfiles: "deny",
     fallthrough: false,

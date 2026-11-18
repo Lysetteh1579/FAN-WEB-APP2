@@ -14,10 +14,10 @@ paths:
   /summit/access:
     get:
       operationId: getSummitAccess
-      summary: Check verified session access to the summit
+      summary: Check verified session access to the account portal
       responses:
         "200":
-          description: An authenticated session may open the event website
+          description: An authenticated session may open the account portal
           content:
             application/json:
               schema:
@@ -27,16 +27,14 @@ paths:
   /summit/content/:
     get:
       operationId: getSummitDocument
-      summary: Receive the event document only after authentication
+      summary: Receive the public summit event document
       responses:
         "200":
-          description: Protected vanilla HTML event page
+          description: Public vanilla HTML event page
           content:
             text/html:
               schema:
                 type: string
-        "401":
-          description: Sign-in is required
   /healthz:
     get:
       operationId: healthCheck

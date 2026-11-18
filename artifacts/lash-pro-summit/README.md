@@ -1,19 +1,19 @@
-# Lash Pro Summit 2026 — Private Event Portal
+# Lash Pro Summit 2026 — Event Website
 
-A vanilla HTML/CSS/JavaScript event page behind working Clerk authentication.
+A public vanilla HTML/CSS/JavaScript event page with optional Clerk sign-in.
 The user approved authentication as a separate step before Phase 2.
-Account signup is open to everyone; access to the event requires a session.
+Account signup is open to everyone. The user approved showing the summit before sign-in, superseding the earlier whole-site login requirement.
 Only the authentication shell uses React; the original summit remains vanilla.
 Event registration is still a demonstration, not a real reservation.
 
 ## Structure
 ```
 artifacts/lash-pro-summit/
-  index.html, src/          # public authentication shell
+  index.html, src/          # public summit frame and authentication shell
   public/                  # public brand assets only
 artifacts/api-server/
-  private/summit/           # protected original HTML, CSS, JS, speaker data
-  src/routes/summit.ts      # verifies sessions before sending event files
+  private/summit/           # original event assets, served publicly by the API
+  src/routes/summit.ts      # public event files; session-protected account access
   src/middlewares/clerkProxyMiddleware.ts
 ```
 
@@ -24,16 +24,17 @@ artifacts/api-server/
 - For another hosting environment, configure your own Clerk instance and the same environment variable names through its secret manager, serve the frontend and API on one origin, and route `/api` to Express.
 - Build the API with `pnpm --filter @workspace/api-server run build`; its build copies private event files next to the bundle, not into the public web build.
 - Build the frontend with `pnpm --filter @workspace/lash-pro-summit run build` using the hosting environment's `PORT` and `BASE_PATH`.
-- A plain static file server is **no longer sufficient**: session validation requires the API server.
+- A plain static file server is **not sufficient**: the API serves event assets and validates account sessions.
 
 ## Authentication and protection
 
-- `/` is a minimal public access page with sign-in and signup links, not the event website.
+- `/` shows the original summit immediately, with sign-in and signup links.
 - `/sign-in` handles sign-in and password recovery; `/sign-up` handles signup and verification.
-- `/user-portal` opens the existing summit in a same-origin protected document.
-- `/api/summit/access` and every `/api/summit/content/` file require a verified session. Signed-out requests return 401.
-- Responses containing event content use `Cache-Control: private, no-store`.
-- Sign-out removes the event view; sessions are managed by Clerk rather than local password storage.
+- `/user-portal` requires sign-in and opens the summit with a sign-out toolbar.
+- `/api/summit/access` still requires a verified session. Signed-out requests return 401.
+- `/api/summit/content/` and its event assets are public, as explicitly approved by the user.
+- Responses containing event content use `Cache-Control: no-store`.
+- Sign-out returns to the public summit; sessions are managed by Clerk rather than local password storage.
 - The production Clerk proxy must remain mounted before body parsers in the API server.
 - Accounts created in the development environment are separate from production accounts.
 - Do not copy `private/summit/` into the frontend's public directory. Vite's filesystem serving rules also deny access to private files.
@@ -46,7 +47,7 @@ artifacts/api-server/
 - Accessibility: designed to target WCAG 2.2 AA; not independently audited.
 
 ## Manual QA checklist
-0. Signed out: event content is absent from `/`, `/user-portal` returns to the access page, and protected API/file requests return 401. Create a verified account, sign in, refresh, then sign out and confirm content is no longer accessible. Check password recovery from the sign-in form.
+0. Signed out: `/` shows the original summit and account links; event assets return 200, while `/api/summit/access` returns 401. `/user-portal` returns to the public summit. Create a verified account, sign in, refresh, then sign out and confirm the public summit remains visible. Check password recovery from the sign-in form.
 1. Header stays sticky; at < 768px a hamburger toggles the menu (aria-expanded updates, Escape closes). Anchors #speakers, #agenda, #about scroll correctly.
 2. Countdown ticks every second with fixed-width digits. To test expiry, temporarily change `EVENT_START` in `js/timer.js` to a past date: "Event Live Now!" shows, no negative values, interval stops.
 3. Filters: each button shows only matching speakers instantly; active button is rose and `aria-pressed="true"`.

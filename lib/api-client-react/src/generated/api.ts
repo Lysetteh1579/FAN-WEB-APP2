@@ -56,7 +56,7 @@ export const getGetSummitAccessUrl = () => {
 }
 
 /**
- * @summary Check verified session access to the summit
+ * @summary Check verified session access to the account portal
  */
 export const getSummitAccess = async ( options?: Parameters<typeof customFetch>[1]): Promise<SummitAccess> => {
 
@@ -103,7 +103,7 @@ export type GetSummitAccessQueryError = ErrorType<void>
 
 
 /**
- * @summary Check verified session access to the summit
+ * @summary Check verified session access to the account portal
  */
 
 export function useGetSummitAccess<TData = Awaited<ReturnType<typeof getSummitAccess>>, TError = ErrorType<void>>(
@@ -133,7 +133,7 @@ export const getGetSummitDocumentUrl = () => {
 }
 
 /**
- * @summary Receive the event document only after authentication
+ * @summary Receive the public summit event document
  */
 export const getSummitDocument = async ( options?: Parameters<typeof customFetch>[1]): Promise<string> => {
 
@@ -157,7 +157,7 @@ export const getGetSummitDocumentQueryKey = () => {
     }
 
 
-export const getGetSummitDocumentQueryOptions = <TData = Awaited<ReturnType<typeof getSummitDocument>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSummitDocument>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+export const getGetSummitDocumentQueryOptions = <TData = Awaited<ReturnType<typeof getSummitDocument>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSummitDocument>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -176,14 +176,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetSummitDocumentQueryResult = NonNullable<Awaited<ReturnType<typeof getSummitDocument>>>
-export type GetSummitDocumentQueryError = ErrorType<void>
+export type GetSummitDocumentQueryError = ErrorType<unknown>
 
 
 /**
- * @summary Receive the event document only after authentication
+ * @summary Receive the public summit event document
  */
 
-export function useGetSummitDocument<TData = Awaited<ReturnType<typeof getSummitDocument>>, TError = ErrorType<void>>(
+export function useGetSummitDocument<TData = Awaited<ReturnType<typeof getSummitDocument>>, TError = ErrorType<unknown>>(
   options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSummitDocument>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {

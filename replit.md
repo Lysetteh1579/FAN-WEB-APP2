@@ -7,7 +7,7 @@ A single-page virtual event portal for lash artists, studio owners, and beauty s
 - Follow the user's V3 specification, preserved under `.local/conversation-workspace/files/attached_assets/`.
 - The deliverable uses semantic HTML, modular CSS, and vanilla JavaScript. Vite supplies the preview/build tooling only.
 - Registration is a frontend demonstration: do not collect, persist, or transmit registration information or imply an actual reservation.
-- The user expanded the requirements to include a login page with working sign-in, not a visual demo. Anyone may create an account, and the entire event website must require sign-in. Authentication is separate from the demo event-registration form.
+- The user expanded the requirements to include working sign-in and open account signup. The user subsequently approved showing the summit page first, before sign-in: the event website is public, while login and signup remain available. This explicitly supersedes the earlier whole-site sign-in requirement. Authentication is separate from the demo event-registration form.
 - Do not invent speaker biographies, ticket prices, session times, photographs, social profiles, or attendee claims. Use explicit TBA agenda details and speaker initials until approved assets are available.
 - GitHub destination: `Lysetteh1579/FAN-WEB-APP2`, branch `future`. Keep `main` unchanged.
 - Ask the user before additional project changes outside the approved build.
@@ -28,7 +28,7 @@ A single-page virtual event portal for lash artists, studio owners, and beauty s
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
 - API: Express 5, Clerk session middleware and production auth proxy
-- Authentication shell: React + Clerk; protected summit: original vanilla HTML/CSS/JavaScript
+- Site and authentication shell: React + Clerk; public summit: original vanilla HTML/CSS/JavaScript
 - DB: PostgreSQL + Drizzle ORM
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec)
