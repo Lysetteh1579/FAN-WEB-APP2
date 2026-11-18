@@ -1,0 +1,68 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+paths:
+  /summit/access:
+    get:
+      operationId: getSummitAccess
+      summary: Check verified session access to the summit
+      responses:
+        "200":
+          description: An authenticated session may open the event website
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SummitAccess"
+        "401":
+          description: Sign-in is required
+  /summit/content/:
+    get:
+      operationId: getSummitDocument
+      summary: Receive the event document only after authentication
+      responses:
+        "200":
+          description: Protected vanilla HTML event page
+          content:
+            text/html:
+              schema:
+                type: string
+        "401":
+          description: Sign-in is required
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+components:
+  schemas:
+    SummitAccess:
+      type: object
+      required: [authenticated]
+      properties:
+        authenticated:
+          type: boolean
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Lash Pro Summit">
+  <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#F4C2C2"/><stop offset="1" stop-color="#D4AF37"/></linearGradient></defs>
+  <circle cx="32" cy="32" r="30" fill="#1A1A1A" stroke="#D4AF37" stroke-width="1.5"/>
+  <path d="M12 38 Q32 16 52 38" fill="none" stroke="url(#g)" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M18 31 L14 22 M25 26 L23 17 M32 24.5 L32 15 M39 26 L41 17 M46 31 L50 22" stroke="url(#g)" stroke-width="2" stroke-linecap="round"/>
+</svg>

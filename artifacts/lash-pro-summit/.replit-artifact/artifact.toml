@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Lash Pro Summit 2026"
+description = "A vanilla HTML, CSS and JavaScript virtual lash education summit page with speaker filtering, countdown, agenda and accessible demonstration registration."
+version = "1.0.0"
+id = "artifacts/lash-pro-summit"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21996
+
+[services.development]
+run = "pnpm --filter @workspace/lash-pro-summit run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/lash-pro-summit", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/lash-pro-summit/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21996"
+BASE_PATH = "/"

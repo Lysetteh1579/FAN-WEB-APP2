@@ -1,31 +1,52 @@
-# Lash Pro Summit 2026 — Event Portal (Presentation Demo)
+# Lash Pro Summit 2026 — Private Event Portal
 
-A static, vanilla HTML/CSS/JavaScript event page. No backend, database, auth, payments, or AI. Vite is used only to serve/build.
+A vanilla HTML/CSS/JavaScript event page behind working Clerk authentication.
+The user approved authentication as a separate step before Phase 2.
+Account signup is open to everyone; access to the event requires a session.
+Only the authentication shell uses React; the original summit remains vanilla.
+Event registration is still a demonstration, not a real reservation.
 
 ## Structure
 ```
-index.html
-css/style.css  css/components.css  css/responsive.css
-js/app.js  js/filter.js  js/modal.js  js/timer.js
-data/speakers.js  data/agenda.js
-assets/images/
+artifacts/lash-pro-summit/
+  index.html, src/          # public authentication shell
+  public/                  # public brand assets only
+artifacts/api-server/
+  private/summit/           # protected original HTML, CSS, JS, speaker data
+  src/routes/summit.ts      # verifies sessions before sending event files
+  src/middlewares/clerkProxyMiddleware.ts
 ```
-(`src/` is leftover scaffold and is not loaded.)
 
 ## Running
-- **pnpm / Vite:** `pnpm --filter @workspace/lash-pro-summit run dev` (requires `PORT` and `BASE_PATH` env vars, e.g. `PORT=5173 BASE_PATH=/`). Build: `run build` (outputs `dist/public`).
-- **Plain static server (including the standalone GitHub copy):** from this folder run `python3 -m http.server 8080` or `npx serve .` and open http://localhost:8080. No installation or build is needed. ES modules require HTTP; opening the file directly via `file://` will not work.
+- Use pnpm to install the workspace dependencies.
+- In Replit, start the managed **API Server** and **Lash Pro Summit 2026** workflows. They supply their own ports and URL prefixes.
+- Authentication uses auto-provisioned `CLERK_SECRET_KEY`, `CLERK_PUBLISHABLE_KEY`, and `VITE_CLERK_PUBLISHABLE_KEY`. Never commit secret values.
+- For another hosting environment, configure your own Clerk instance and the same environment variable names through its secret manager, serve the frontend and API on one origin, and route `/api` to Express.
+- Build the API with `pnpm --filter @workspace/api-server run build`; its build copies private event files next to the bundle, not into the public web build.
+- Build the frontend with `pnpm --filter @workspace/lash-pro-summit run build` using the hosting environment's `PORT` and `BASE_PATH`.
+- A plain static file server is **no longer sufficient**: session validation requires the API server.
 
-Note: in a Vite build, `assets/images/` files are not copied automatically; if photos are added, place them in `public/assets/images/` as well, or serve the folder statically.
+## Authentication and protection
+
+- `/` is a minimal public access page with sign-in and signup links, not the event website.
+- `/sign-in` handles sign-in and password recovery; `/sign-up` handles signup and verification.
+- `/user-portal` opens the existing summit in a same-origin protected document.
+- `/api/summit/access` and every `/api/summit/content/` file require a verified session. Signed-out requests return 401.
+- Responses containing event content use `Cache-Control: private, no-store`.
+- Sign-out removes the event view; sessions are managed by Clerk rather than local password storage.
+- The production Clerk proxy must remain mounted before body parsers in the API server.
+- Accounts created in the development environment are separate from production accounts.
+- Do not copy `private/summit/` into the frontend's public directory. Vite's filesystem serving rules also deny access to private files.
 
 ## Demo limitations
 - **Registration is demo only.** Nothing is saved, sent, or persisted; no seat is reserved. Reopening the dialog resets it.
-- **Speaker photos not supplied.** Monogram placeholders are shown. To enable a photo, add the file at the path in `data/speakers.js` and set `photoAvailable: true`. A failed load falls back to the monogram. No image requests are made while `photoAvailable` is false.
+- **Speaker photos not supplied.** Monogram placeholders are shown. To enable a photo, add it under the protected `private/summit/assets/images/` path and set `photoAvailable: true` in the protected speaker data. A failed load falls back to the monogram. No image requests are made while `photoAvailable` is false.
 - **Agenda times and titles not supplied.** Sessions show "Time TBA" and "Session details to be announced" under a "Schedule to be announced" label.
 - No social profile URLs, prices, attendance numbers, or testimonials are included.
 - Accessibility: designed to target WCAG 2.2 AA; not independently audited.
 
 ## Manual QA checklist
+0. Signed out: event content is absent from `/`, `/user-portal` returns to the access page, and protected API/file requests return 401. Create a verified account, sign in, refresh, then sign out and confirm content is no longer accessible. Check password recovery from the sign-in form.
 1. Header stays sticky; at < 768px a hamburger toggles the menu (aria-expanded updates, Escape closes). Anchors #speakers, #agenda, #about scroll correctly.
 2. Countdown ticks every second with fixed-width digits. To test expiry, temporarily change `EVENT_START` in `js/timer.js` to a past date: "Event Live Now!" shows, no negative values, interval stops.
 3. Filters: each button shows only matching speakers instantly; active button is rose and `aria-pressed="true"`.
